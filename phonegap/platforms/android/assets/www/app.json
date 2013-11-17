@@ -1,0 +1,1 @@
+{"id":"e13cb7be-c7d9-4a6c-84d0-f188c0e258ed","js":[{"path":"phonegap.js","remote":true},{"path":"app.js","update":"delta"},{"path":"moment.min.js"},{"path":"qr.js"}],"css":[{"path":"resources/css/app.css","update":"delta"},{"path":"resources/css/selfscanning.css","update":"delta"}]}
