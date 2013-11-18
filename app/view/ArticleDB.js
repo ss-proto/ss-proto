@@ -1,7 +1,7 @@
 Ext.define("SelfScanning.view.ArticleDB", {
 	extend: "Ext.dataview.List",
 	alias: 'widget.articledb',
-	requires: 'Ext.field.Search',
+	requires: ['Ext.field.Search', 'Ext.Toolbar'],
 	config: {
 		title: 'Artikel suchen',
 		id: 'articledb',

@@ -31,12 +31,67 @@ Ext.define("SelfScanning.view.ShoppingCart", {
 		//currCartItemStore.setAutoLoad(true);
 		//currCartItemStore.setAutoSync(true);
 
-		Ext.getCmp('shoppingLocation').setRecord(shoppingCartRec);
-		Ext.getCmp('cartInfo').setRecord(shoppingCartRec);
-		
+
 		this.shoppingCartRecord = shoppingCartRec;
+
+		Ext.getCmp('shoppingLocation').setRecord(shoppingCartRec);
+		//Ext.getCmp('cartInfo').setData(shoppingCartRec.getData());
+		this.updateCartInfo();
 		
 	},
+	
+	updateCartInfo: function() {
+		var shoppingCart = this.shoppingCartRecord;
+		
+		if (!shoppingCart) return;
+		
+		var summe = 0;
+		
+		shoppingCart.CartItems().load({
+			success: function(records) {
+				console.log('loaded:');
+				console.log(records);
+			}
+		});
+		
+		Ext.getStore('cartItemStore').each(function(currItem) {
+			console.log(currItem);
+			switch (currItem.getAPMapping().getArticle().get('weightType')) {
+				case 'DEF':
+					var vkp = currItem.getAPMapping().get('vkp');
+					var deposit = currItem.getAPMapping().getArticle().get('deposit');
+					summe +=  (vkp + deposit) * currItem.get('menge');
+					break;
+				case 'PERW':
+					var vkp = currItem.getAPMapping().get('vkp');
+					var deposit = currItem.getAPMapping().getArticle().get('deposit');
+					summe +=  (vkp + deposit) * currItem.get('menge');
+					break;
+				case 'WERW':
+					summe += currItem.getAPMapping().get('vkp') * currItem.get('weight');
+					break;
+				case 'LW':
+					summe += currItem.getAPMapping().get('vkp');
+					break;
+				default: break;
+			}
+			console.log(summe);
+		});
+		
+		summe = summe.toFixed(2) + '';
+		x = summe.split('.');
+		x1 = x[0];
+		x2 = x.length > 1 ? ',' + x[1] : '';
+		var rgx = /(\d+)(\d{3})/;
+		while (rgx.test(x1)) {
+			x1 = x1.replace(rgx, '$1' + ',' + '$2');
+		}
+		
+		summe = x1 + x2 + '&nbsp;&euro;';
+		
+		Ext.getCmp('cartInfo').setData({total:summe});
+	},
+
 	
 	getQRData: function() {
 		var currCart = this.shoppingCartRecord;
@@ -124,17 +179,30 @@ Ext.define("SelfScanning.view.ShoppingCart", {
 				cls: 'buttonBar',
 				docked: 'bottom',
 				items: [addArticleBtn]
-			}
+			};
 			
+			var cartTotal = {
+			    xtype: 'container',
+			    id: 'cartInfo',
+			    tpl: [
+					'<div class="summe">',
+						'<span class="text">Gesamt:</span>',
+						'<span class="zahl">{total}</span>',
+					'</div>'],
+				scrollDock: 'bottom'
+			};
+			
+			/*
 			var cartInfo = {
-				xtype: 'container',
+				xtype: 'dataview',
 				id: 'cartInfo',
-				tpl: [
+				itemTpl: [
 					'<div class="summe">',
 						'<span class="text">Gesamt:</span>',
 						'<span class="zahl">{[this.getSumme(values)]}</span>',
 					'</div>',
 					{getSumme: function(values) {
+						console.log('cartInfo.getSumme(), values:')
 						console.log(values);
 						var summe = 0;
 						for (i in values.CartItems) {
@@ -174,15 +242,15 @@ Ext.define("SelfScanning.view.ShoppingCart", {
 				scrollDock: 'bottom',
 				docked: 'bottom'
 			};
+			*/
 			
 			var cartItemList = {
 				xtype: 'cartitemlist',
-				flex: 1,
-				store: Ext.getStore('cartItemStore'),
 				items: [
-					cartInfo
+					cartTotal
 				],
-				width: '100%'
+				width: '100%',
+			
 			};
 			
 			

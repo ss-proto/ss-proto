@@ -104,11 +104,8 @@ body {
  *
  */
  
-#continueshopping {
+#continueshopping, #continueshopping .x-body{
 	margin-top: .5em;
-}
- 
-#continueshoppinglist, #continueshoppinglist .x-body {
 	background: transparent;
 }
  
@@ -117,11 +114,11 @@ body {
 	text-align: center;
 }
 
-#continueshopping .x-list>.x-body {
+#continueshopping.x-list>.x-body {
 	padding: 0 1em;
 }
 
-#continueshopping .x-list .x-list-header {
+#continueshopping.x-list .x-list-header {
 	font-family: 'Open Sans Condensed';
 	font-weight: bold;
 	font-size: 1em;
@@ -133,7 +130,7 @@ body {
 	text-align: center;
 }
 
-#continueshopping .x-list .x-list-header .x-innerhtml:before {
+#continueshopping.x-list .x-list-header .x-innerhtml:before {
 	font-family: 'IcoMoon';
 	content: '+';
 	margin-right: .3em;
@@ -146,7 +143,6 @@ body {
 	padding-bottom: 0;
 	border: 0;
 	border-bottom: 1px solid rgba(100,100,100,.2);
-	height: 2em;
 }
 
 #continueshopping .x-list-item  .x-innerhtml {

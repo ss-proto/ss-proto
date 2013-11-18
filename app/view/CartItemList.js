@@ -10,6 +10,8 @@ Ext.define("SelfScanning.view.CartItemList", {
 			align: 'center'
 		},
 		ui: 'round',
+		flex: 1,
+		store: 'cartItemStore',
 		scrollable: null,
 		loadingText: "Artikel werden geladen...",
 		//emptyText: '<div class="emptyText">Ihr Einkaufswagen ist leer.<br />Um einen Artikel hinzuzufügen, scannen Sie den Barcode auf der Verpackung oder suchen den Artikel in der Datenbank.</div>',
@@ -21,7 +23,7 @@ Ext.define("SelfScanning.view.CartItemList", {
 				'<span class="gesamtpreis">{[this.getSum(values)]}</span>',
 			'</div>',
 			{getDescription: function(values) {
-				console.log(values);
+				//console.log(values.APMapping.Article.bezeichnung);
 				var bezeichnung = values.APMapping.Article.bezeichnung;
 				var weightType  = values.APMapping.Article.weightType;
 				var weight		= values.weight;
@@ -69,6 +71,9 @@ Ext.define("SelfScanning.view.CartItemList", {
 		listeners: {
 			itemtap: function(thisView, index, target, record, e, eOpts) {
 				Ext.getCmp('editCartItem').setRecord(record).show();
+			},
+			refresh: function(thisView, eOpts) {
+				Ext.getCmp('shoppingcart').updateCartInfo();
 			}
 		}
 		// NOTIZ:

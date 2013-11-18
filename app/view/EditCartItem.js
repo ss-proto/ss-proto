@@ -1,5 +1,6 @@
 Ext.define("SelfScanning.view.EditCartItem", {
 	extend: "Ext.Panel",
+	requires: 'Ext.field.Spinner',
 	alias: "widget.editcartitem",
 	id: 'editCartItem',
 	config: {
@@ -46,8 +47,13 @@ Ext.define("SelfScanning.view.EditCartItem", {
 				margin: 10,
 				text: 'L&ouml;schen',
 				handler: function() {
-					Ext.getCmp('editCartItem').getRecord().erase();
-					Ext.getCmp('editCartItem').hide();
+					Ext.getCmp('editCartItem').getRecord().erase({
+						success: function() {
+							Ext.getCmp('editCartItem').hide();
+						}
+					}
+					);
+					
 				}},
 				
 				{
@@ -99,7 +105,12 @@ Ext.define("SelfScanning.view.EditCartItem", {
 				}
 				
 				Ext.getCmp('editDetails').setRecord(cartItem);
+			},
+			hide: function() {
+				Ext.getCmp('cartitemlist').refresh();
+				Ext.getCmp('continueshopping').refresh();
 			}
+			
 		}
 	}
 });

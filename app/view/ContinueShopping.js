@@ -8,13 +8,15 @@ Ext.define("SelfScanning.view.ContinueShopping", {
 			pack: 'start',
 			align: 'stretch'
 		},
-		//flex: 1,
 		items: [
 			{cls: 'message',
 			html: 'Oder setzen Sie einen offenen Einkauf fort'},
 			{xtype: 'list',
 			scrollable: false,
 			id: 'continueshoppinglist',
+			store: 'shoppingCartStore',
+			grouped: true,
+			disableSelection: true,
 			//itemHeight: 40,
 			itemTpl: [
 				'<div class="cartDetails">',
@@ -27,11 +29,11 @@ Ext.define("SelfScanning.view.ContinueShopping", {
 					for (i in values.CartItems) {
 						menge += values.CartItems[i].menge
 					}
-					console.log(menge);
+					//console.log(menge);
 					return menge;
 				},
 				getSumme: function(values) {
-					console.log(values);
+					//console.log(values);
 					var summe = 0;
 					for (i in values.CartItems) {
 						var currItem = values.CartItems[i];
@@ -73,15 +75,12 @@ Ext.define("SelfScanning.view.ContinueShopping", {
 					return x1 + x2 + '&nbsp;&euro;';
 				}}
 			],
-			store: 'shoppingCartStore',
-			grouped: true,
-			disableSelection: true,
 			listeners: {
 				itemtap: function(thisList, index, target, record, e, eOpts){
 					thisList.parent.fireEvent('activateShoppingCart', record);
 				},
 				refresh: function() {
-					this.setHeight((this.itemsCount*this.getItemHeight()+20) + Ext.getStore('shoppingCartStore').getGroups().length * 30);
+					//this.setHeight((this.itemsCount*this.getItemHeight()+20) + Ext.getStore('shoppingCartStore').getGroups().length * 30);
 				}
 			}
 			}

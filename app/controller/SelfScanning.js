@@ -10,9 +10,7 @@ Ext.define('SelfScanning.controller.SelfScanning', {
         },
         control: {
         	startShopping: {
-				newShoppingCartCommand: 'onNewShoppingCartCommand'
-			},
-			continueShopping: {
+				newShoppingCartCommand: 'onNewShoppingCartCommand',
 				activateShoppingCart: 'activateShoppingCart'
 			},
 			shoppingCart: {
@@ -261,27 +259,36 @@ Ext.define('SelfScanning.controller.SelfScanning', {
 			cartItem.setAPMapping(price);
 			cartItem.setShoppingCart(shoppingCart);
 			
-			cartItem.save();
+			//cartItem.save();
 			
 		} else {
 			var alteMenge = parseInt(cartItem.get('menge'),10);
 			cartItem.set('menge', ++alteMenge);
-			cartItem.save();
+			//cartItem.save();
 			//Ext.getStore('cartItemStore').sync();
 		}
 		
-		// set('Menge') und set('Summe') muss angestoﬂen werden, damit sich der Wert aktualisiert
-		shoppingCart.set('menge', '');
-		shoppingCart.set('summe', '');
-		shoppingCart.save();
+		cartItem.save({
+			success: function() {
+				//Ext.getStore('shoppingCartStore').sync();
+				
+				Ext.getStore('cartItemStore').load({
+					callback: function() {
+						console.log('cart item created, cartitemstore loaded');
+						Ext.getCmp('shoppingcart').shoppingCartRecord.CartItems().load({
+							callback: function() {
+								Ext.getCmp('cartitemlist').refresh();
+								Ext.getCmp('continueshopping').refresh();
+							}
+						});
+					}
+				});
+					
+			}
+		});
 		
 		
-		Ext.getStore('shoppingCartStore').sync();
 		
-		Ext.getStore('cartItemStore').load();
-		
-		Ext.getCmp('cartitemlist').refresh();
-		Ext.getCmp('continueshoppinglist').refresh();
 		
 		// Best‰tigungsfenster einblenden
 		//Ext.getCmp('editCartItem').setRecord(cartItem).show();
@@ -400,6 +407,30 @@ Ext.define('SelfScanning.controller.SelfScanning', {
     
     //called when the Application is launched, remove if not needed
     launch: function(app) {
-        
+    	//this.registerPushService();
+		if (window.localStorage.getItem('runned')==null) {
+			alert('first run!');
+			window.localStorage.setItem('runned','1');
+			
+			console.log('loading remote stores');
+			Ext.getStore('remoteRegionStore').load();
+		}
+		
+		moment.lang('de');
+		
+		Ext.getStore('cartItemStore').on('load', function() {
+			Ext.getStore('shoppingCartStore').load();
+		}, this, {single:true}).load();
+		/*
+		Ext.getStore('localRegionStore').load();
+		Ext.getStore('localStoreStore').load();
+		Ext.getStore('localArticleStore').load();
+		Ext.getStore('localAPMappingStore').load();
+		
+		*/
+		
+		Ext.create('SelfScanning.view.EditCartItem');
+		
+		console.log("launch");
     }
 });
